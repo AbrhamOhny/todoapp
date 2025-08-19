@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/services.dart';
 import 'package:todoapp/Interfaces/task.dart';
 import 'package:todoapp/Interfaces/settings.dart';
+import 'package:path_provider/path_provider.dart';
 
 class User {
   late int id;
@@ -11,7 +11,6 @@ class User {
   late List<Task> tasks;
   late Settings settings;
   bool isLoggedIn = false;
-  final String _userDataFilePath = 'assets/userdata.json';
   // User({
   //   required this.id,
   //   required this.username,
@@ -24,49 +23,65 @@ class User {
   User();
 
   void register(String username, String password) {
-    this.id = 0;
-    this.tasks = [];
-    this.settings = Settings();
+    id = 0;
+    tasks = [];
+    settings = Settings();
     this.username = username;
     this.password = password;
+  }
+
+  Future<File> _getUserDataFile() async {
+    final dir = await getApplicationDocumentsDirectory();
+    return File('${dir.path}/userdata.json');
   }
 
   Future<void> loadUserData() async {
     // Load user data from a database or API
     // This is a placeholder for actual data loading logic
-    String data = await rootBundle.loadString(_userDataFilePath);
-    Map<String, dynamic> jsonResult = jsonDecode(data);
-    id = jsonResult['id'] is int
-        ? jsonResult['id']
-        : int.parse(jsonResult['id'] ?? '0');
-    username = jsonResult['username'] ?? '';
-    password = jsonResult['password'] ?? '';
-    settings = Settings(
-      preferedThemeMode: int.parse(
-        jsonResult['settings']?['preferedThemeMode'] ?? '2',
-      ),
-      loginOnStart: jsonResult['settings']?['loginOnStart'] ?? false,
-    );
-    if (jsonResult['tasks'] != null) {
-      List<dynamic> taskList = jsonResult['tasks'] as List<dynamic>;
-      // may need to check if tasklist is empty
-      tasks = taskList
-          .map(
-            (task) => Task(
-              id: task['id'] is int ? task['id'] : int.parse(task['id'] ?? '0'),
-              title: task['title'],
-              description: task['description'],
-              isCompleted: task['completed'] is bool
-                  ? task['completed']
-                  : task['completed'] == 'true',
-              createdAt: DateTime.parse(task['date_added']),
-            ),
-          )
-          .toList();
+    final file = await _getUserDataFile();
+    if (await file.exists()) {
+      String data = await file.readAsString();
+      Map<String, dynamic> jsonResult = jsonDecode(data);
+      id = jsonResult['id'] is int
+          ? jsonResult['id']
+          : int.parse(jsonResult['id'] ?? '0');
+      username = jsonResult['username'] ?? '';
+      password = jsonResult['password'] ?? '';
+      settings = Settings(
+        preferedThemeMode: int.parse(
+          jsonResult['settings']?['preferedThemeMode'] ?? '2',
+        ),
+        loginOnStart: jsonResult['settings']?['loginOnStart'] ?? false,
+      );
+      if (jsonResult['tasks'] != null) {
+        List<dynamic> taskList = jsonResult['tasks'] as List<dynamic>;
+        // may need to check if tasklist is empty
+        tasks = taskList
+            .map(
+              (task) => Task(
+                id: task['id'] is int
+                    ? task['id']
+                    : int.parse(task['id'] ?? '0'),
+                title: task['title'],
+                description: task['description'],
+                isCompleted: task['completed'] is bool
+                    ? task['completed']
+                    : task['completed'] == 'true',
+                createdAt: DateTime.parse(task['date_added']),
+              ),
+            )
+            .toList();
+      } else {
+        print("No tasks found for user $username");
+      }
+      print("Loaded successfully for user $username");
     } else {
-      print("No tasks found for user $username");
+      print("No user data file found. Creating a new user.");
+      id = -1;
+      settings = Settings();
+      tasks = [];
+      // proceed to register
     }
-    print("Loaded successfully for user $username");
   }
 
   Map<String, dynamic> toJson() {
@@ -88,8 +103,8 @@ class User {
       'tasks': tasks.map((task) => task.toJson()).toList(),
       'settings': settings.toJson(),
     };
-    File file = File(_userDataFilePath);
 
+    final file = await _getUserDataFile();
     String jsonString = jsonEncode(userData);
     await file.writeAsString(jsonString);
     print("User data saved successfully for user $username");
