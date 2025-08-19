@@ -52,25 +52,36 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: pagesPadding,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('Login', style: Theme.of(context).textTheme.displaySmall),
-          Card(
-            child: Padding(
-              padding: itemsPadding,
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(labelText: 'Username'),
-                  ),
-                  TextField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                  ),
-                  ElevatedButton(
+          Padding(
+            padding: pagesPadding,
+            child: Text(
+              'Login',
+              style: Theme.of(context).textTheme.displaySmall,
+            ),
+          ),
+          Padding(
+            padding: itemsPadding,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              spacing: 15,
+              children: [
+                TextField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(labelText: 'Username'),
+                ),
+                TextField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                ),
+                Padding(
+                  padding: pagesPadding,
+                  child: ElevatedButton(
                     onPressed: () {
                       if (currentUser.username == _usernameController.text &&
                           currentUser.password == _passwordController.text) {
@@ -88,10 +99,10 @@ class _LoginPageState extends State<LoginPage> {
                         return;
                       }
                     },
-                    child: Text('Login'),
+                    child: Text('Procceed'),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
@@ -117,26 +128,44 @@ class _RegisterPageState extends State<RegisterPage> {
     return Padding(
       padding: pagesPadding,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('Register', style: Theme.of(context).textTheme.displaySmall),
-          Card(
-            child: Padding(
-              padding: itemsPadding,
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(labelText: 'Username'),
-                  ),
-                  TextField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                  ),
-                  ElevatedButton(
+          Padding(
+            padding: pagesPadding,
+            child: Text(
+              'Register',
+              style: Theme.of(context).textTheme.displaySmall,
+            ),
+          ),
+          Padding(
+            padding: itemsPadding,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              spacing: 15,
+              children: [
+                TextField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(labelText: 'Username'),
+                ),
+                TextField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                ),
+                Padding(
+                  padding: pagesPadding,
+                  child: ElevatedButton(
                     onPressed: () {
+                      if (_usernameController.text.isEmpty ||
+                          _passwordController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Please fill in all fields')),
+                        );
+                        return;
+                      }
                       currentUser.register(
                         _usernameController.text,
                         _passwordController.text,
@@ -146,10 +175,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         MaterialPageRoute(builder: (context) => MainApp()),
                       );
                     },
-                    child: Text('Register'),
+                    child: Text('Procceed'),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
