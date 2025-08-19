@@ -31,8 +31,30 @@ class User {
   }
 
   Future<File> _getUserDataFile() async {
-    final dir = await getApplicationDocumentsDirectory();
-    return File('${dir.path}/userdata.json');
+    Directory docs;
+
+    if (Platform.isWindows) {
+      // Windows: C:\Users\<user>\Documents
+      docs = Directory(
+        "${Platform.environment['USERPROFILE']}\\Documents\\todoapp",
+      );
+    } else if (Platform.isMacOS || Platform.isLinux) {
+      // macOS/Linux: /home/<user>/Documents or /Users/<user>/Documents
+      final home = Platform.environment['HOME']!;
+      docs = Directory("$home/Documents/todoapp");
+    } else {
+      // Android/iOS don’t have a "Documents" folder in the same sense
+      // -> fall back to app documents directory, then append /todoapp
+      final base = await getApplicationDocumentsDirectory();
+      docs = Directory("${base.path}/todoapp");
+    }
+
+    // Ensure the folder exists
+    if (!(await docs.exists())) {
+      await docs.create(recursive: true);
+    }
+
+    return File('${docs.path}/userdata.json');
   }
 
   Future<void> loadUserData() async {
@@ -107,6 +129,6 @@ class User {
     final file = await _getUserDataFile();
     String jsonString = jsonEncode(userData);
     await file.writeAsString(jsonString);
-    print("User data saved successfully for user $username");
+    print("User data saved successfully for user $username on ${file.path}");
   }
 }

@@ -18,5 +18,5 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/userdata.json
+    - assets/todoapp/userdata.json
   uses-material-design: true
