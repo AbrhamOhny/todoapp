@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:todoapp/main.dart';
 
+/*
+  TODO:
+  - Implement user registration and login functionality
+  - Add persistent storage for user data
+  - Improve UI/UX design
+*/
 /// configuration ///
 final EdgeInsets pagesPadding = EdgeInsets.symmetric(
   horizontal: 15.0,

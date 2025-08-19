@@ -1,5 +1,7 @@
 # TODO
 
-(A) Dynamic colorScheme feature
-(B) Add task handling
-(C) Populate pages
+## pages.dart
+
+- Implement user registration and login functionality
+- Add persistent storage for user data
+- Improve UI/UX design
