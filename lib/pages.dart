@@ -72,9 +72,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Handle registration logic
-                      print(
-                        'Registered with username ${_usernameController.text}',
+                      currentUser.register(
+                        _usernameController.text,
+                        _passwordController.text,
+                      );
+                      currentUser.saveData();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => MainApp()),
                       );
                     },
                     child: Text('Register'),
