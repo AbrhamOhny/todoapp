@@ -221,25 +221,10 @@ class _SettingsPageState extends State<SettingsPage> {
     } else if (value == 2) {
       MainApp.of(context)?.setThemeMode(ThemeMode.system);
     }
-    setState(() {
-      _themeDropdownValue = value ?? 0;
-    });
   }
-
-  int getAppliedThemeMode() {
-    final themeMode = MainApp.of(context)?.getThemeMode() ?? ThemeMode.system;
-
-    if (themeMode == ThemeMode.light) return 0;
-    if (themeMode == ThemeMode.dark) return 1;
-    return 2;
-  }
-
-  late int _themeDropdownValue;
 
   @override
   Widget build(BuildContext context) {
-    _themeDropdownValue = getAppliedThemeMode();
-
     return Padding(
       padding: pagesPadding,
       child: Column(
@@ -277,7 +262,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             DropdownMenuItem(value: 2, child: Text('System')),
                           ],
                           onChanged: onDropdownValueChanged,
-                          value: _themeDropdownValue,
+                          value: currentUser.settings.preferedThemeMode,
                           dropdownColor: Theme.of(context).colorScheme.surface,
                           underline: Container(height: 0),
                           borderRadius: BorderRadius.circular(8),

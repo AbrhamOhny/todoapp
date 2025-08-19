@@ -21,15 +21,11 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  ThemeMode _themeMode = ThemeMode.system;
   void setThemeMode(ThemeMode mode) {
     setState(() {
-      _themeMode = mode;
+      currentUser.settings.setFromThemeMode(mode);
+      currentUser.saveData();
     });
-  }
-
-  ThemeMode getThemeMode() {
-    return _themeMode;
   }
 
   @override
@@ -37,7 +33,7 @@ class _MainAppState extends State<MainApp> {
     return MaterialApp(
       theme: app_theme.themeDataLight,
       darkTheme: app_theme.themeDataDark,
-      themeMode: _themeMode,
+      themeMode: currentUser.settings.themeMode,
       home: NavigationHandler(),
     );
   }
