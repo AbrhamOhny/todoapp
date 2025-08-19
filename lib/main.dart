@@ -64,6 +64,11 @@ class _NavigationHandlerState extends State<NavigationHandler> {
       ),
     );
     Scaffold freshPage = Scaffold(body: SafeArea(child: RegisterPage()));
-    return currentUser.id == -1 ? freshPage : defaultPage;
+    Scaffold loginPage = Scaffold(body: SafeArea(child: LoginPage()));
+    return currentUser.id == -1
+        ? freshPage
+        : currentUser.settings.loginOnStart && !currentUser.isLoggedIn
+        ? loginPage
+        : defaultPage;
   }
 }

@@ -35,6 +35,71 @@ const List<Widget> navDestinations = [
   ),
 ];
 
+/// LoginPage ///
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: pagesPadding,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Login', style: Theme.of(context).textTheme.displaySmall),
+          Card(
+            child: Padding(
+              padding: itemsPadding,
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _usernameController,
+                    decoration: InputDecoration(labelText: 'Username'),
+                  ),
+                  TextField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(labelText: 'Password'),
+                    obscureText: true,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (currentUser.username == _usernameController.text &&
+                          currentUser.password == _passwordController.text) {
+                        currentUser.isLoggedIn = true;
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => MainApp()),
+                        );
+                      } else {
+                        // Handle login failure
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Invalid username or password'),
+                          ),
+                        );
+                        return;
+                      }
+                    },
+                    child: Text('Login'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// RegisterPage ///
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

@@ -10,6 +10,7 @@ class User {
   late String password;
   late List<Task> tasks;
   late Settings settings;
+  bool isLoggedIn = false;
   final String _userDataFilePath = 'assets/userdata.json';
   // User({
   //   required this.id,
@@ -39,6 +40,7 @@ class User {
         ? jsonResult['id']
         : int.parse(jsonResult['id'] ?? '0');
     username = jsonResult['username'] ?? '';
+    password = jsonResult['password'] ?? '';
     settings = Settings(
       preferedThemeMode: int.parse(
         jsonResult['settings']?['preferedThemeMode'] ?? '2',
@@ -81,6 +83,7 @@ class User {
     Map<String, dynamic> userData = {
       'id': id,
       'username': username,
+      'password': password,
       'preferedThemeMode': settings.preferedThemeMode.toString(),
       'tasks': tasks.map((task) => task.toJson()).toList(),
       'settings': settings.toJson(),
