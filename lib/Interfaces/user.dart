@@ -40,7 +40,10 @@ class User {
         : int.parse(jsonResult['id'] ?? '0');
     username = jsonResult['username'] ?? '';
     settings = Settings(
-      preferedThemeMode: int.parse(jsonResult['preferedThemeMode'] ?? '2'),
+      preferedThemeMode: int.parse(
+        jsonResult['settings']?['preferedThemeMode'] ?? '2',
+      ),
+      loginOnStart: jsonResult['settings']?['loginOnStart'] ?? false,
     );
     if (jsonResult['tasks'] != null) {
       List<dynamic> taskList = jsonResult['tasks'] as List<dynamic>;

@@ -223,6 +223,13 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  void onSwitchChanged(bool value) {
+    setState(() {
+      currentUser.settings.loginOnStart = value;
+      currentUser.saveData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -270,6 +277,40 @@ class _SettingsPageState extends State<SettingsPage> {
                             vertical: 0,
                             horizontal: 20,
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: pagesPadding,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    spacing: 5,
+                    children: [
+                      Icon(Icons.android_outlined),
+                      Text(
+                        'App Behavior',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: itemsPadding,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Login on start'),
+                        Switch(
+                          value: currentUser.settings.loginOnStart,
+                          onChanged: onSwitchChanged,
                         ),
                       ],
                     ),
