@@ -131,4 +131,9 @@ class User {
     await file.writeAsString(jsonString);
     print("User data saved successfully for user $username on ${file.path}");
   }
+
+  addTask(Task task) {
+    tasks.add(task);
+    saveData();
+  }
 }

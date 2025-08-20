@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todoapp/main.dart';
+import 'package:todoapp/Interfaces/task.dart';
 
 /*
   TODO:
@@ -262,37 +263,146 @@ class TasksPage extends StatefulWidget {
 class _TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
-    final List<Widget> taskWidgets = currentUser.tasks.map((task) {
-      return Card(
-        child: ListTile(
-          title: Text(task.title),
-          subtitle: Text(task.description),
-          trailing: Checkbox(
-            value: task.isCompleted,
-            onChanged: (bool? value) {
-              setState(() {
-                task.isCompleted = value ?? false;
-              });
-            },
+    final List<Widget> taskWidgets = [];
+    for (var task in currentUser.tasks) {
+      taskWidgets.add(
+        Card(
+          child: ListTile(
+            title: Text(task.title),
+            subtitle: Text(task.description),
+            trailing: Checkbox(
+              value: task.isCompleted,
+              onChanged: (bool? value) {
+                setState(() {
+                  task.isCompleted = value ?? false;
+                  currentUser.saveData();
+                });
+              },
+            ),
           ),
         ),
       );
-    }).toList();
+    }
+    if (taskWidgets.isEmpty) {
+      taskWidgets.insert(
+        0,
+        Center(
+          child: Text(
+            'No tasks available',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
+      );
+    }
+    taskWidgets.add(
+      TextButton(
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddTaskPage()),
+          );
+          setState(() {});
+        },
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          runAlignment: WrapAlignment.center,
+          spacing: 5,
+          runSpacing: 5,
+          children: [
+            Icon(Icons.add),
+            Text('Add Task', style: TextStyle(letterSpacing: -0.5)),
+          ],
+        ),
+      ),
+    );
     return Padding(
       padding: pagesPadding,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
-        children: taskWidgets.isNotEmpty
-            ? taskWidgets
-            : [
-                Center(
-                  child: Text(
-                    'No tasks available',
-                    style: Theme.of(context).textTheme.bodyLarge,
+        children: taskWidgets,
+      ),
+    );
+  }
+}
+
+/// AddTaskPage ///
+class AddTaskPage extends StatefulWidget {
+  const AddTaskPage({super.key});
+
+  @override
+  State<AddTaskPage> createState() => _AddTaskPageState();
+}
+
+class _AddTaskPageState extends State<AddTaskPage> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: pagesPadding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: pagesPadding,
+              child: Text(
+                'Add Task',
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
+            ),
+            Padding(
+              padding: itemsPadding,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                spacing: 15,
+                children: [
+                  TextField(
+                    controller: _titleController,
+                    decoration: InputDecoration(labelText: 'Title'),
                   ),
-                ),
-              ],
+                  TextField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(labelText: 'Description'),
+                  ),
+                  Padding(
+                    padding: pagesPadding,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_titleController.text.isEmpty ||
+                            _descriptionController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Please fill in all fields'),
+                            ),
+                          );
+                          return;
+                        }
+                        final newTask = Task(
+                          id: currentUser.tasks.length + 1,
+                          title: _titleController.text,
+                          description: _descriptionController.text,
+                        );
+                        setState(() {
+                          currentUser.addTask(newTask);
+                        });
+                        currentUser.saveData();
+                        Navigator.pop(context);
+                      },
+                      child: Text('Add Task'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
