@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 class Settings {
   late int preferedThemeMode;
   late bool loginOnStart;
+  late bool deleteTaskOnComplete;
   late ThemeMode themeMode;
 
-  Settings({this.preferedThemeMode = 2, this.loginOnStart = false}) {
+  Settings({
+    this.preferedThemeMode = 2,
+    this.loginOnStart = false,
+    this.deleteTaskOnComplete = false,
+  }) {
     setFromInt(preferedThemeMode);
   }
 
@@ -13,6 +18,7 @@ class Settings {
     return {
       'preferedThemeMode': preferedThemeMode.toString(),
       'loginOnStart': loginOnStart,
+      'deleteTaskOnComplete': deleteTaskOnComplete,
     };
   }
 

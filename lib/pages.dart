@@ -427,9 +427,16 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  void onSwitchChanged(bool value) {
+  void onSwitchLoginChanged(bool value) {
     setState(() {
       currentUser.settings.loginOnStart = value;
+      currentUser.saveData();
+    });
+  }
+
+  void onSwitchTaskCompleteChanged(bool value) {
+    setState(() {
+      currentUser.settings.deleteTaskOnComplete = value;
       currentUser.saveData();
     });
   }
@@ -514,7 +521,20 @@ class _SettingsPageState extends State<SettingsPage> {
                         Text('Login on start'),
                         Switch(
                           value: currentUser.settings.loginOnStart,
-                          onChanged: onSwitchChanged,
+                          onChanged: onSwitchLoginChanged,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: itemsPadding,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Delete task on complete'),
+                        Switch(
+                          value: currentUser.settings.deleteTaskOnComplete,
+                          onChanged: onSwitchTaskCompleteChanged,
                         ),
                       ],
                     ),
