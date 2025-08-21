@@ -74,6 +74,8 @@ class User {
           jsonResult['settings']?['preferedThemeMode'] ?? '2',
         ),
         loginOnStart: jsonResult['settings']?['loginOnStart'] ?? false,
+        deleteTaskOnComplete:
+            jsonResult['settings']?['deleteTaskOnComplete'] ?? false,
       );
       if (jsonResult['tasks'] != null) {
         List<dynamic> taskList = jsonResult['tasks'] as List<dynamic>;
