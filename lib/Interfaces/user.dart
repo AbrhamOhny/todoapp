@@ -26,6 +26,7 @@ class User {
     id = 0;
     tasks = [];
     settings = Settings();
+    isLoggedIn = true;
     this.username = username;
     this.password = password;
   }
@@ -61,8 +62,11 @@ class User {
     // Load user data from a database or API
     // This is a placeholder for actual data loading logic
     final file = await _getUserDataFile();
+    String data = "";
     if (await file.exists()) {
-      String data = await file.readAsString();
+      data = await file.readAsString();
+    }
+    if (data.isNotEmpty && data != " ") {
       Map<String, dynamic> jsonResult = jsonDecode(data);
       id = jsonResult['id'] is int
           ? jsonResult['id']
@@ -134,8 +138,13 @@ class User {
     print("User data saved successfully for user $username on ${file.path}");
   }
 
-  addTask(Task task) {
+  void addTask(Task task) {
     tasks.add(task);
+    saveData();
+  }
+
+  void deleteTask(int id) {
+    tasks.removeWhere((task) => task.id == id);
     saveData();
   }
 }

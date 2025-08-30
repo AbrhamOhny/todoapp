@@ -264,7 +264,11 @@ class _TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> taskWidgets = [];
+    List<int> tasksToDelete = [];
     for (var task in currentUser.tasks) {
+      if (task.isCompleted && currentUser.settings.deleteTaskOnComplete) {
+        tasksToDelete.add(task.id);
+      }
       taskWidgets.add(
         Card(
           child: ListTile(
@@ -275,6 +279,9 @@ class _TasksPageState extends State<TasksPage> {
               onChanged: (bool? value) {
                 setState(() {
                   task.isCompleted = value ?? false;
+                  if (currentUser.settings.deleteTaskOnComplete) {
+                    currentUser.deleteTask(task.id);
+                  }
                   currentUser.saveData();
                 });
               },
@@ -282,6 +289,10 @@ class _TasksPageState extends State<TasksPage> {
           ),
         ),
       );
+    }
+    // Delete tasks after iteration
+    for (var id in tasksToDelete) {
+      currentUser.deleteTask(id);
     }
     if (taskWidgets.isEmpty) {
       taskWidgets.insert(
