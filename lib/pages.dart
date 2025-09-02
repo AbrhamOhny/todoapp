@@ -17,6 +17,12 @@ final EdgeInsets itemsPadding = EdgeInsets.symmetric(
   horizontal: 10.0,
   vertical: 5.0,
 );
+final cardTitleStyle = TextStyle(
+  fontWeight: FontWeight.bold,
+  wordSpacing: 0,
+  letterSpacing: 0,
+);
+final textFieldBorderRadius = BorderRadius.circular(10);
 List<Widget> pages = [TasksPage(), HomePage(), SettingsPage()];
 const List<Widget> navDestinations = [
   NavigationDestination(
@@ -35,6 +41,41 @@ const List<Widget> navDestinations = [
     label: 'Settings',
   ),
 ];
+
+/// functions ///
+void registerHandler(
+  BuildContext context,
+  TextEditingController username,
+  TextEditingController password,
+  TextEditingController confirmPassword,
+) {
+  final int _minPassLength = 3;
+  if (username.text.isEmpty || password.text.isEmpty) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Please fill in all fields')));
+    return;
+  }
+  if (password.text.length < _minPassLength) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Password length must be $_minPassLength or higher'),
+      ),
+    );
+    return;
+  }
+  if (password.text != confirmPassword.text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Password confirmation does not matches')),
+    );
+    return;
+  }
+  currentUser.register(username.text, password.text);
+  currentUser.saveData();
+  Navigator.of(
+    context,
+  ).pushReplacement(MaterialPageRoute(builder: (context) => MainApp()));
+}
 
 /// LoginPage ///
 class LoginPage extends StatefulWidget {
@@ -73,11 +114,42 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 TextField(
                   controller: _usernameController,
-                  decoration: InputDecoration(labelText: 'Username'),
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(),
+                      borderRadius: textFieldBorderRadius,
+                    ),
+                  ),
                 ),
                 TextField(
                   controller: _passwordController,
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(),
+                      borderRadius: textFieldBorderRadius,
+                    ),
+                    counter: Wrap(
+                      children: [
+                        Text("Forgot your credentials? "),
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            onTap: () {
+                              print("reset creds clicked");
+                            },
+                            child: Text(
+                              "click here",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   obscureText: true,
                 ),
                 Padding(
@@ -123,6 +195,8 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -149,31 +223,45 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 TextField(
                   controller: _usernameController,
-                  decoration: InputDecoration(labelText: 'Username'),
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(),
+                      borderRadius: textFieldBorderRadius,
+                    ),
+                  ),
                 ),
                 TextField(
                   controller: _passwordController,
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(),
+                      borderRadius: textFieldBorderRadius,
+                    ),
+                  ),
+                  obscureText: true,
+                ),
+                TextField(
+                  controller: _confirmPasswordController,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm Password',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(),
+                      borderRadius: textFieldBorderRadius,
+                    ),
+                  ),
                   obscureText: true,
                 ),
                 Padding(
                   padding: pagesPadding,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_usernameController.text.isEmpty ||
-                          _passwordController.text.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Please fill in all fields')),
-                        );
-                        return;
-                      }
-                      currentUser.register(
-                        _usernameController.text,
-                        _passwordController.text,
-                      );
-                      currentUser.saveData();
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => MainApp()),
+                      registerHandler(
+                        context,
+                        _usernameController,
+                        _passwordController,
+                        _confirmPasswordController,
                       );
                     },
                     child: Text('Procceed'),
@@ -210,12 +298,14 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: pagesPadding,
       child: Column(
+        spacing: 5,
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'Welcome, ${currentUser.username}!',
-            style: Theme.of(context).textTheme.displaySmall,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           Card(
             child: Padding(
@@ -228,10 +318,7 @@ class _HomePageState extends State<HomePage> {
                     spacing: 5,
                     children: [
                       Icon(Icons.table_chart),
-                      Text(
-                        "Tasks",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      Text("Tasks", style: cardTitleStyle),
                     ],
                   ),
                   Padding(
@@ -376,11 +463,25 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 children: [
                   TextField(
                     controller: _titleController,
-                    decoration: InputDecoration(labelText: 'Title'),
+                    decoration: InputDecoration(
+                      labelText: 'Title',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(),
+                        borderRadius: textFieldBorderRadius,
+                      ),
+                    ),
                   ),
                   TextField(
                     controller: _descriptionController,
-                    decoration: InputDecoration(labelText: 'Description'),
+                    minLines: 3,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(),
+                        borderRadius: textFieldBorderRadius,
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: pagesPadding,
@@ -406,7 +507,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         currentUser.saveData();
                         Navigator.pop(context);
                       },
-                      child: Text('Add Task'),
+                      child: Text('Confirm'),
                     ),
                   ),
                 ],
@@ -471,10 +572,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     spacing: 5,
                     children: [
                       Icon(Icons.brush_outlined),
-                      Text(
-                        'Theme',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      Text('Theme', style: cardTitleStyle),
                     ],
                   ),
                   Padding(
@@ -518,10 +616,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     spacing: 5,
                     children: [
                       Icon(Icons.android_outlined),
-                      Text(
-                        'App Behavior',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      Text('App Behavior', style: cardTitleStyle),
                     ],
                   ),
                   Padding(
