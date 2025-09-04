@@ -77,6 +77,87 @@ void registerHandler(
   ).pushReplacement(MaterialPageRoute(builder: (context) => MainApp()));
 }
 
+/// ResetCredentialsPage ///
+class ResetCredentialsPage extends StatefulWidget {
+  const ResetCredentialsPage({super.key});
+
+  @override
+  State<ResetCredentialsPage> createState() => _ResetCredentialsState();
+}
+
+class _ResetCredentialsState extends State<ResetCredentialsPage> {
+  int pageIndex = 0;
+  late Widget confirmationPage;
+  late Widget mainPage;
+  late List<Widget> pageController;
+
+  @override
+  Widget build(BuildContext context) {
+    confirmationPage = Padding(
+      padding: pagesPadding,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 15,
+        children: [
+          Text(
+            "By resetting your credentials, will result in wiping out currently saved data. Do you want to continue?",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          TextButton(
+            onPressed: () => {
+              setState(() {
+                pageIndex = 1;
+              }),
+            },
+            child: Text("Continue"),
+          ),
+          TextButton(
+            onPressed: () => {Navigator.of(context).pop()},
+            child: Text("Cancel"),
+          ),
+        ],
+      ),
+    );
+    mainPage = Padding(
+      padding: pagesPadding,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          spacing: 15,
+          children: [
+            Text("Reset successful!"),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  currentUser.reset();
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => NavigationHandler(),
+                    ),
+                  );
+                },
+                child: Text(
+                  "Back to register page",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    pageController = [confirmationPage, mainPage];
+    return Scaffold(body: pageController[pageIndex]);
+  }
+}
+
 /// LoginPage ///
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -137,7 +218,11 @@ class _LoginPageState extends State<LoginPage> {
                           cursor: SystemMouseCursors.click,
                           child: GestureDetector(
                             onTap: () {
-                              print("reset creds clicked");
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ResetCredentialsPage(),
+                                ),
+                              );
                             },
                             child: Text(
                               "click here",

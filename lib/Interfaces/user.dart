@@ -31,6 +31,16 @@ class User {
     this.password = password;
   }
 
+  Future<void> reset() async {
+    id = -1;
+    tasks = [];
+    settings = Settings();
+    isLoggedIn = false;
+    username = "";
+    password = "";
+    await saveData();
+  }
+
   Future<File> _getUserDataFile() async {
     Directory docs;
 
