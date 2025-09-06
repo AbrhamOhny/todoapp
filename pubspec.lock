@@ -25,14 +25,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
-  charts_painter:
-    dependency: "direct main"
-    description:
-      name: charts_painter
-      sha256: "5314ef91979b59b60a869df86caba09e7a3ce56da1fb18530ea7bbd2da77fa70"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.1"
   clock:
     dependency: transitive
     description:
@@ -73,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  fl_chart:
+    dependency: "direct main"
+    description:
+      name: fl_chart
+      sha256: d3f82f4a38e33ba23d05a08ff304d7d8b22d2a59a5503f20bd802966e915db89
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
