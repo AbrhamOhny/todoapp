@@ -14,14 +14,14 @@ void main() async {
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
-  static _MainAppState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_MainAppState>();
+  static MainAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<MainAppState>();
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  State<MainApp> createState() => MainAppState();
 }
 
-class _MainAppState extends State<MainApp> {
+class MainAppState extends State<MainApp> {
   void setThemeMode(ThemeMode mode) {
     setState(() {
       currentUser.settings.setFromThemeMode(mode);

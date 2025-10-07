@@ -9,7 +9,7 @@ class Task {
   late String description;
   late bool isCompleted;
   late DateTime createdAt;
-  DateTime? completedAt;
+  late DateTime? completedAt;
 
   Task({
     required this.id,
@@ -17,7 +17,7 @@ class Task {
     required this.description,
     this.isCompleted = false,
     DateTime? createdAt,
-    DateTime? completedAt,
+    this.completedAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
   void complete() {
@@ -44,8 +44,8 @@ class TasksList extends ListBase<Task> {
   }
 
   @override
-  void add(Task task) {
-    _tasks.add(task);
+  void add(Task element) {
+    _tasks.add(element);
   }
 
   @override
