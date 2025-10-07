@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todoapp/pages.dart';
-import 'package:todoapp/theme.dart' as app_theme;
-import 'package:todoapp/Interfaces/user.dart';
+import 'package:todoapp/controller/pages.dart';
+import 'package:todoapp/controller/theme.dart' as app_theme;
+import 'package:todoapp/interfaces/user.dart';
+import 'package:todoapp/pages/credentials.dart';
 
 final User currentUser = User();
 
@@ -52,7 +53,9 @@ class _NavigationHandlerState extends State<NavigationHandler> {
   @override
   Widget build(BuildContext context) {
     Scaffold defaultPage = Scaffold(
-      body: SafeArea(child: pages[currentPageIndex]),
+      body: SafeArea(
+        child: SingleChildScrollView(child: pages[currentPageIndex]),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentPageIndex,
         onDestinationSelected: (int index) {

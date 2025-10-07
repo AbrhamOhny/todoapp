@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:todoapp/Interfaces/task.dart';
-import 'package:todoapp/Interfaces/settings.dart';
+import 'package:todoapp/interfaces/task.dart';
+import 'package:todoapp/interfaces/settings.dart';
 import 'package:path_provider/path_provider.dart';
 
 class User {
   late int id;
   late String username;
   late String password;
-  late List<Task> tasks;
+  TasksList tasks = TasksList([]);
   late Settings settings;
   bool isLoggedIn = false;
   // User({
@@ -24,7 +24,6 @@ class User {
 
   void register(String username, String password) {
     id = 0;
-    tasks = [];
     settings = Settings();
     isLoggedIn = true;
     this.username = username;
@@ -33,7 +32,7 @@ class User {
 
   Future<void> reset() async {
     id = -1;
-    tasks = [];
+    tasks.clear();
     settings = Settings();
     isLoggedIn = false;
     username = "";
@@ -88,36 +87,42 @@ class User {
           jsonResult['settings']?['preferedThemeMode'] ?? '2',
         ),
         loginOnStart: jsonResult['settings']?['loginOnStart'] ?? false,
-        deleteTaskOnComplete:
-            jsonResult['settings']?['deleteTaskOnComplete'] ?? false,
+        hideTaskOnComplete:
+            jsonResult['settings']?['hideTaskOnComplete'] ?? false,
       );
       if (jsonResult['tasks'] != null) {
         List<dynamic> taskList = jsonResult['tasks'] as List<dynamic>;
         // may need to check if tasklist is empty
-        tasks = taskList
-            .map(
-              (task) => Task(
-                id: task['id'] is int
-                    ? task['id']
-                    : int.parse(task['id'] ?? '0'),
-                title: task['title'],
-                description: task['description'],
-                isCompleted: task['completed'] is bool
-                    ? task['completed']
-                    : task['completed'] == 'true',
-                createdAt: DateTime.parse(task['date_added']),
-              ),
-            )
-            .toList();
+        tasks = TasksList(
+          taskList
+              .map(
+                (task) => Task(
+                  id: task['id'] is int
+                      ? task['id']
+                      : int.parse(task['id'] ?? '0'),
+                  title: task['title'],
+                  description: task['description'],
+                  isCompleted: task['completed'] is bool
+                      ? task['completed']
+                      : task['completed'] == 'true',
+                  createdAt: DateTime.parse(task['date_added']),
+                  completedAt: task['date_completed'] != null
+                      ? DateTime.parse(task['date_completed'])
+                      : null,
+                ),
+              )
+              .toList(),
+        );
       } else {
         print("No tasks found for user $username");
       }
       print("Loaded successfully for user $username");
+      print("$tasks");
     } else {
       print("No user data file found. Creating a new user.");
       id = -1;
       settings = Settings();
-      tasks = [];
+      tasks.clear();
       // proceed to register
     }
   }
@@ -150,11 +155,6 @@ class User {
 
   void addTask(Task task) {
     tasks.add(task);
-    saveData();
-  }
-
-  void deleteTask(int id) {
-    tasks.removeWhere((task) => task.id == id);
     saveData();
   }
 }

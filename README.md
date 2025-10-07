@@ -4,24 +4,41 @@ A new Flutter project.
 
 # TODO
 
-1. Dynamic colorScheme feature
-2. Add task handling
-3. Populate pages
+1. Dynamic color scheme feature
+2. Populate home page
+3. Add reset credential on setting page
 
-# Idea
+# Changelog
 
-- Setting: Reset data on reset
+Major, minor, and todo updates while developing the app
 
-# Recently Changed
+## 07-10-2025
 
-## UI Improvement
+Finished todo: **Add task handling**
 
-- Login Page
-- Home Page
-- Add Task Page
-- Register Page
+New todo:
 
-## New function
+- Populate home page
+- Add reset credential on setting page
+
+Major changes:
+
+- Refined folder structure
+- Refined user's data
+- Added `FlChart`
+- Added `TasksList` for better task handling
+- Added reset credential
+- Change `remove task on complete` to `hide` instead
+- Fixed no scroll on pages
+
+## 07-09-2025
+
+- UI Improvement:
+
+  - Login Page
+  - Home Page
+  - Add Task Page
+  - Register Page
 
 - Register page: added confirm password and minimal length
 - Login page: added credentials reset
